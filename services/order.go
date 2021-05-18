@@ -13,3 +13,7 @@ type OrderService struct {
 func (service OrderService)Save(ctx context.Context, o *business_models.Order) (uint, error)  {
 	return service.Repository.Save(ctx, o)
 }
+
+func (service OrderService)GetAll(ctx context.Context) ([]business_models.Order, error)  {
+	return service.Repository.GetAll(ctx)
+}

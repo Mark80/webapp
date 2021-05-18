@@ -21,7 +21,6 @@ func main() {
 	}
 
 	ctx := context.Background()
-
 	dao := dal.OrderDao{DB: db}
 
 	err = dao.Migrate(ctx)
@@ -37,6 +36,10 @@ func main() {
 
 	api.NewRoutes(engine,&orderService)
 
-	engine.Run()
+	err = engine.Run()
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
 
 }
