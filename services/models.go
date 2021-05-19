@@ -1,4 +1,4 @@
-package business_models
+package services
 
 type Order struct {
 	OrderID string

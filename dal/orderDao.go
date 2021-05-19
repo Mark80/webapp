@@ -5,14 +5,10 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"webapp/business_models"
+	"webapp/services"
 )
 
-type OrderRepository interface {
-	Migrate(ctx context.Context) error
-	Save(ctx context.Context, o *business_models.Order) (uint, error)
-    GetAll(ctx context.Context) ([]business_models.Order, error)
-}
+
 type OrderDao struct {
 	DB *gorm.DB
 }
@@ -28,7 +24,7 @@ func (b OrderDao) Migrate(ctx context.Context) error {
 	return b.DB.WithContext(ctx).AutoMigrate(&order{})
 }
 
-func (b OrderDao) Save(ctx context.Context, o *business_models.Order) (uint, error) {
+func (b OrderDao) Save(ctx context.Context, o *services.Order) (uint, error) {
 	orderDb := &order{
 		OrderID: o.OrderID,
 		User:    o.User,
@@ -44,7 +40,7 @@ func (b OrderDao) Save(ctx context.Context, o *business_models.Order) (uint, err
 
 }
 
-func (b OrderDao) GetAll(ctx context.Context) ([]business_models.Order, error) {
+func (b OrderDao) GetAll(ctx context.Context) ([]services.Order, error) {
 
 	var orders []order
 	res := b.DB.WithContext(ctx).Find(&orders)
@@ -53,15 +49,15 @@ func (b OrderDao) GetAll(ctx context.Context) ([]business_models.Order, error) {
 		return nil, fmt.Errorf("failed to retrive orders, %w", res.Error)
 	}
 
-	var bOrders []business_models.Order
+	var bOrders []services.Order
 	for _, o := range orders {
 		bOrders = append(bOrders, convertFrom(o))
 	}
 	return bOrders, nil
 }
 
-func convertFrom(o order) business_models.Order {
-	return business_models.Order{
+func convertFrom(o order) services.Order {
+	return services.Order{
 		OrderID: o.OrderID,
 		User:    o.User,
 		Item:    o.Item,

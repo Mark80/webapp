@@ -2,18 +2,22 @@ package services
 
 import (
 	"context"
-	"webapp/business_models"
-	"webapp/dal"
 )
 
-type OrderService struct {
-	Repository dal.OrderRepository
+type OrderRepository interface {
+	Migrate(ctx context.Context) error
+	Save(ctx context.Context, o *Order) (uint, error)
+	GetAll(ctx context.Context) ([]Order, error)
 }
 
-func (service OrderService)Save(ctx context.Context, o *business_models.Order) (uint, error)  {
+type OrderService struct {
+	Repository OrderRepository
+}
+
+func (service OrderService)Save(ctx context.Context, o *Order) (uint, error)  {
 	return service.Repository.Save(ctx, o)
 }
 
-func (service OrderService)GetAll(ctx context.Context) ([]business_models.Order, error)  {
+func (service OrderService)GetAll(ctx context.Context) ([]Order, error)  {
 	return service.Repository.GetAll(ctx)
 }
