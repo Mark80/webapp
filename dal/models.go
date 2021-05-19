@@ -55,15 +55,15 @@ func (b OrderDao) GetAll(ctx context.Context) ([]business_models.Order, error) {
 
 	var bOrders []business_models.Order
 	for _, o := range orders {
-
-		bo := business_models.Order{
-			OrderID: o.OrderID,
-			User:    o.User,
-			Item:    o.Item,
-		}
-		bOrders = append(bOrders, bo)
+		bOrders = append(bOrders, convertFrom(o))
 	}
-
 	return bOrders, nil
+}
 
+func convertFrom(o order) business_models.Order {
+	return business_models.Order{
+		OrderID: o.OrderID,
+		User:    o.User,
+		Item:    o.Item,
+	}
 }
