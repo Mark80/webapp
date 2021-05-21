@@ -21,7 +21,7 @@ func NewRoutes(engine *gin.Engine, orderService *services.OrderService) {
 			save, err := orderService.Save(context, &order)
 			if err != nil {
 				context.JSON(500, gin.H{"error": "generic error"})
-			}else {
+			} else {
 				context.JSON(200, gin.H{"id": save})
 			}
 
@@ -32,8 +32,18 @@ func NewRoutes(engine *gin.Engine, orderService *services.OrderService) {
 		orders, err := orderService.GetAll(context)
 		if err != nil {
 			context.JSON(500, gin.H{"error": "generic error"})
-		}else{
+		} else {
 			context.JSON(200, gin.H{"orders": orders})
+		}
+	})
+
+	engine.GET("api/orders/:id", func(context *gin.Context) {
+		id, _ := context.Params.Get("id")
+		order, err := orderService.GetByID(context, id)
+		if err != nil {
+			context.JSON(500, gin.H{"error": "generic error"})
+		} else {
+			context.JSON(200, gin.H{"orders": order})
 		}
 	})
 
