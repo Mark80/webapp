@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"webapp/services"
 )
 
@@ -14,6 +15,13 @@ func NewRoutes(engine *gin.Engine, orderService *services.OrderService) {
 	engine.POST("api/orders", SaveOrder(orderService))
 	engine.GET("api/orders", GetAllOrders(orderService))
 	engine.GET("api/orders/:id", GetOrderById(orderService))
+	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
+	engine.GET("/index", func(c *gin.Context) {
+		r, _ := orderService.GetAll(c)
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"orders": r,
+		})
+	})
 }
 
 func GetOrderById(orderService *services.OrderService) func(context *gin.Context) {
@@ -49,7 +57,7 @@ func SaveOrder(orderService *services.OrderService) func(context *gin.Context) {
 		if err != nil {
 			context.JSON(400, gin.H{"error": "Parsing json error"})
 		} else {
-			save, err := orderService.Save(context, &order)
+			save, err := orderService.Save(context, order)
 			if err != nil {
 				context.JSON(500, gin.H{"error": "generic error"})
 			} else {

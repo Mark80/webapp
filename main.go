@@ -30,6 +30,7 @@ func main() {
 	}
 
 	engine := gin.Default()
+	engine.LoadHTMLGlob("templates/*")
 	orderService := services.OrderService{
 		Repository: dao,
 	}

@@ -23,14 +23,14 @@ func (b OrderDao) Migrate(ctx context.Context) error {
 	return b.DB.WithContext(ctx).AutoMigrate(&order{})
 }
 
-func (b OrderDao) Save(ctx context.Context, o *services.Order) (uint, error) {
-	orderDb := &order{
+func (b OrderDao) Save(ctx context.Context, o services.Order) (uint, error) {
+	orderDb := order{
 		OrderID: o.OrderID,
 		User:    o.User,
 		Item:    o.Item,
 	}
 
-	res := b.DB.WithContext(ctx).Save(orderDb)
+	res := b.DB.WithContext(ctx).Save(&orderDb)
 	if res.Error != nil {
 		log.Errorf("failed to insert order, %v\n", res.Error)
 		return 0, fmt.Errorf("failed to insert order, %w", res.Error)
@@ -55,17 +55,17 @@ func (b OrderDao) GetAll(ctx context.Context) ([]services.Order, error) {
 	return bOrders, nil
 }
 
-func (b OrderDao) GetByID(ctx context.Context, id string) (*services.Order, error) {
+func (b OrderDao) GetByID(ctx context.Context, id string) (services.Order, error) {
 
 	var o order
 	res := b.DB.WithContext(ctx).First(&o, id)
 	if res.Error != nil {
 		log.Errorf("failed to retrive orders, %v\n", res.Error)
-		return nil, fmt.Errorf("failed to retrive orders, %w", res.Error)
+		return services.Order{}, fmt.Errorf("failed to retrive orders, %w", res.Error)
 	}
 
 	result := convertFrom(o)
-	return &result, nil
+	return result, nil
 
 }
 

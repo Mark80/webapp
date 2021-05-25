@@ -15,16 +15,16 @@ func (err *OrderNotFound) Error() string {
 
 type OrderRepository interface {
 	Migrate(ctx context.Context) error
-	Save(ctx context.Context, o *Order) (uint, error)
+	Save(ctx context.Context, o Order) (uint, error)
 	GetAll(ctx context.Context) ([]Order, error)
-	GetByID(ctx context.Context, id  string) (*Order, error)
+	GetByID(ctx context.Context, id  string) (Order, error)
 }
 
 type OrderService struct {
 	Repository OrderRepository
 }
 
-func (service OrderService)Save(ctx context.Context, o *Order) (uint, error)  {
+func (service OrderService)Save(ctx context.Context, o Order) (uint, error)  {
 	return service.Repository.Save(ctx, o)
 }
 
@@ -32,6 +32,6 @@ func (service OrderService)GetAll(ctx context.Context) ([]Order, error)  {
 	return service.Repository.GetAll(ctx)
 }
 
-func (service OrderService)GetByID(ctx context.Context,id string)  (*Order,error) {
+func (service OrderService)GetByID(ctx context.Context,id string)  (Order,error) {
 	return service.Repository.GetByID(ctx, id)
 }
